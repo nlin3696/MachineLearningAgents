@@ -5,11 +5,11 @@ using MLAgents;
 using TMPro;
 using System;
 
-public class PenguinArea : Area
+public class TestCarArea : Area
 {
-    public PenguinAgent penguinAgent;
-    public GameObject penguinBaby;
-    public PenguinFish fishPrefab;
+    public TestCarAgent penguinAgent;
+    //public GameObject penguinBaby;
+    public PenguinFish1 fishPrefab;
     public TextMeshPro cumulativeRewardText;
 
     [HideInInspector]
@@ -19,12 +19,15 @@ public class PenguinArea : Area
 
     private List<GameObject> fishList;
 
+    public Transform[] coinTransfroms;
+    public Transform playerSpawn;
+
     public override void ResetArea()
     {
         RemoveAllFish();
         PlacePenguin();
-        PlaceBaby();
-        SpawnFish(10, fishSpeed);
+        //PlaceBaby();
+        SpawnFish(coinTransfroms.Length);
     }
 
     public void RemoveSpecificFish(GameObject fishObject)
@@ -63,26 +66,34 @@ public class PenguinArea : Area
 
     private void PlacePenguin()
     {
-        penguinAgent.transform.position = ChooseRandomPosition(transform.position, 0f, 360f, 0f, 9f) + Vector3.up * .5f;
-        penguinAgent.transform.rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
+        penguinAgent.transform.position = playerSpawn.position;
+        penguinAgent.transform.rotation = playerSpawn.rotation;
+        //penguinAgent.transform.position = ChooseRandomPosition(transform.position, 0f, 360f, 0f, 9f) + Vector3.up * .5f;
+        //penguinAgent.transform.position = new Vector3(12.63f, 0.35f, -10.78f);
+
+        //penguinAgent.transform.rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
+        //penguinAgent.transform.rotation = Quaternion.Euler(0f, -90f, 0f);
+
     }
 
+    /*
     private void PlaceBaby()
     {
         penguinBaby.transform.position = ChooseRandomPosition(transform.position, -45f, 45f, 4f, 9f) + Vector3.up * .5f;
         penguinBaby.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-    }
+    }*/
 
-    private void SpawnFish(int count, float fishSpeed)
+    private void SpawnFish(int count)
     {
         for (int i = 0; i < count; i++)
         {
             GameObject fishObject = Instantiate<GameObject>(fishPrefab.gameObject);
-            fishObject.transform.position = ChooseRandomPosition(transform.position, 100f, 260f, 2f, 13f) + Vector3.up * .5f;
-            fishObject.transform.rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
+            //fishObject.transform.position = ChooseRandomPosition(transform.position, 100f, 260f, 2f, 13f) + Vector3.up * .5f;
+            fishObject.transform.position = coinTransfroms[i].position;
+            //fishObject.transform.rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
+            fishObject.transform.rotation = coinTransfroms[i].rotation;
             fishObject.transform.parent = transform;
             fishList.Add(fishObject);
-            fishObject.GetComponent<PenguinFish>().fishSpeed = fishSpeed;
         }
     }
 

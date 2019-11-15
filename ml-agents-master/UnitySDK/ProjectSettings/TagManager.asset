@@ -31,6 +31,8 @@ TagManager:
   - purpleGoal
   - baby
   - fish
+  - coin
+  - sand
   layers:
   - Default
   - TransparentFX

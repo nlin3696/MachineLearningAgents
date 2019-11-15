@@ -50,4 +50,7 @@ public class Coin : MonoBehaviour
     {
         GameObject.Find("CoinsText").GetComponent<Text>().text = "Coins: " + coins.ToString();
     }
+
+
+
 }

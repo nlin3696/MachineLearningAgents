@@ -4,17 +4,17 @@ using UnityEngine;
 using MLAgents;
 using System;
 
-public class PenguinAgent : Agent
+public class TestCarAgent : Agent
 {
     public GameObject heartPrefab;
     public GameObject regurgitatedFishPrefab;
 
-    private PenguinArea penguinArea;
+    private TestCarArea penguinArea;
     private Animator animator;
     private RayPerception3D rayPerception;
-    private GameObject baby;
+    //private GameObject baby;
 
-    private bool isFull; // If true, penguin has a full stomach
+    //private bool isFull; // If true, penguin has a full stomach
 
     public override void AgentAction(float[] vectorAction, string textAction)
     {
@@ -40,20 +40,20 @@ public class PenguinAgent : Agent
 
     public override void AgentReset()
     {
-        isFull = false;
+        //isFull = false;
         penguinArea.ResetArea();
     }
 
     public override void CollectObservations()
     {
         // Has the penguin eaten
-        AddVectorObs(isFull);
+        //AddVectorObs(isFull);
 
         // Distance to the baby
-        AddVectorObs(Vector3.Distance(baby.transform.position, transform.position));
+        //AddVectorObs(Vector3.Distance(baby.transform.position, transform.position));
 
         // Direction to baby
-        AddVectorObs((baby.transform.position - transform.position).normalized);
+        //AddVectorObs((baby.transform.position - transform.position).normalized);
 
         // Direction penguin is facing
         AddVectorObs(transform.forward);
@@ -67,69 +67,62 @@ public class PenguinAgent : Agent
         // endOffset: Ending height offset of ray from center of agent
         float rayDistance = 20f;
         float[] rayAngles = { 30f, 60f, 90f, 120f, 150f };
-        string[] detectableObjects = { "baby", "fish", "wall" };
+        string[] detectableObjects = { "coin", "wall", "sand" };
         AddVectorObs(rayPerception.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f));
     }
 
     private void Start()
     {
-        penguinArea = GetComponentInParent<PenguinArea>();
-        baby = penguinArea.penguinBaby;
+        penguinArea = GetComponentInParent<TestCarArea>();
+        //baby = penguinArea.penguinBaby;
         animator = GetComponent<Animator>();
         rayPerception = GetComponent<RayPerception3D>();
     }
 
     private void FixedUpdate()
     {
-        if (Vector3.Distance(transform.position, baby.transform.position) < penguinArea.feedRadius)
-        {
+        //if (Vector3.Distance(transform.position, baby.transform.position) < penguinArea.feedRadius)
+        //{
             // Close enough, try to feed the baby
-            RegurgitateFish();
-        }
+            //RegurgitateFish();
+        //}
     }
 
+    /*
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.CompareTag("fish"))
+        if (collision.transform.CompareTag("coin"))
         {
             EatFish(collision.gameObject);
         }
-        else if (collision.transform.CompareTag("baby"))
+
+
+    }*/
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.CompareTag("coin"))
         {
-            // Try to feed the baby
-            RegurgitateFish();
+            EatFish(other.gameObject);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.transform.CompareTag("sand"))
+        {
+            AddReward(-0.1f);
         }
     }
 
     private void EatFish(GameObject fishObject)
     {
-        if (isFull) return; // Can't eat another fish while full
-        isFull = true;
 
         penguinArea.RemoveSpecificFish(fishObject);
 
         AddReward(1f);
     }
 
-    private void RegurgitateFish()
-    {
-        if (!isFull) return; // Nothing to regurgitate
-        isFull = false;
-
-        // Spawn regurgitated fish
-        GameObject regurgitatedFish = Instantiate<GameObject>(regurgitatedFishPrefab);
-        regurgitatedFish.transform.parent = transform.parent;
-        regurgitatedFish.transform.position = baby.transform.position;
-        Destroy(regurgitatedFish, 4f);
-
-        // Spawn heart
-        GameObject heart = Instantiate<GameObject>(heartPrefab);
-        heart.transform.parent = transform.parent;
-        heart.transform.position = baby.transform.position + Vector3.up;
-        Destroy(heart, 4f);
-
-        AddReward(2f);
-    }
 
 
 

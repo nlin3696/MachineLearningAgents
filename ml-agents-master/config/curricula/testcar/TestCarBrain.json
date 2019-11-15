@@ -1,0 +1,9 @@
+{
+  "measure": "reward",
+  "thresholds": [ -0.1, 0.7, 1.7, 3, 10 ],
+  "min_lesson_length": 20,
+  "signal_smoothing": true,
+  "parameters": {
+    "coin_radius": [ 2.0, 1.0, 0.5, 0.25, 0.1, 0.0 ]
+  }
+}

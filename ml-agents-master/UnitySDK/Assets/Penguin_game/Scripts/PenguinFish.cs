@@ -23,24 +23,24 @@ public class PenguinFish : MonoBehaviour
     {
         if (Time.fixedTime >= nextActionTime)
         {
-            //Randomized the speed
-            randomizedSpeed = fishSpeed * UnityEngine.Random.Range(0.5f, 1.5f);
+            // Randomize the speed
+            randomizedSpeed = fishSpeed * UnityEngine.Random.Range(.5f, 1.5f);
 
-            //Pick a random target 
+            // Pick a random target
             targetPosition = PenguinArea.ChooseRandomPosition(transform.parent.position, 100f, 260f, 2f, 13f);
 
-            //Rotate toward the target
+            // Rotate toward the target
             transform.rotation = Quaternion.LookRotation(targetPosition - transform.position, Vector3.up);
 
-            //Calculate the time to get there
-            float timeToGetThere = Vector3.Distance(transform.forward, targetPosition) / randomizedSpeed;
+            // Calculate the time to get there
+            float timeToGetThere = Vector3.Distance(transform.position, targetPosition) / randomizedSpeed;
             nextActionTime = Time.fixedTime + timeToGetThere;
         }
         else
         {
-            //Make sure that the fish does not swim past the target
+            // Make sure that the fish does not swim past the target
             Vector3 moveVector = randomizedSpeed * transform.forward * Time.fixedDeltaTime;
-            if(moveVector.magnitude <= Vector3.Distance(transform.position, targetPosition))
+            if (moveVector.magnitude <= Vector3.Distance(transform.position, targetPosition))
             {
                 transform.position += moveVector;
             }
